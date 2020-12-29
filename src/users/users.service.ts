@@ -18,4 +18,8 @@ export class UsersService {
   addUser(user: CreateUserDto): Promise<User> {
     return this.usersRepository.save(user)
   }
+
+  findOne(name: string): Promise<User | undefined> {
+    return this.usersRepository.findOne({ name: name })
+  }
 }
