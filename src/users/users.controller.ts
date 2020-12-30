@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
@@ -7,11 +9,14 @@ import { UsersService } from './users.service';
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly ConfigService: ConfigService
+  ) { }
 
   @Get()
-  getHello(): string {
-    return "你好"
+  getConfig(): string {
+    return this.ConfigService.get('TEST');
   }
 
   @Get('/list')
