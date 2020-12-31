@@ -4,19 +4,21 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RolesModule } from './roles/roles.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { JWT_CONFIG, DB_CONFIG } from './config/config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
+      load: [JWT_CONFIG, DB_CONFIG],
       isGlobal: true
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT, 10) || 3306,
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
+      host: DB_CONFIG().HOST,
+      port: DB_CONFIG().PORT,
+      username: DB_CONFIG().USERNAME,
+      password: DB_CONFIG().PASSWORD,
+      database: DB_CONFIG().NAME,
       autoLoadEntities: true,
       synchronize: true,
     }),
