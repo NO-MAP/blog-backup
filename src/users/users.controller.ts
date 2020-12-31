@@ -15,10 +15,8 @@ export class UsersController {
   ) { }
 
   @Get()
-  async getConfig() {
-    const data = await bcrypt.hash('123456789', 10);
-    console.log(data)
-    return this.ConfigService.get('DB');
+  getConfig(): string {
+    return this.ConfigService.get('JWT_SECRET_KEY')
   }
 
   @Get('/list')

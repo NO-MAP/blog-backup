@@ -12,9 +12,9 @@ import { JWT_CONFIG } from 'config/config';
     UsersModule,
     PassportModule,
     JwtModule.register({
-      secret: JWT_CONFIG().SECRET_KEY,
+      secret: JWT_CONFIG().JWT_SECRET_KEY,
       signOptions: {
-        expiresIn: JWT_CONFIG().EXPIRES_IN
+        expiresIn: JWT_CONFIG().JWT_EXPIRES_IN
       }
     })
   ],
