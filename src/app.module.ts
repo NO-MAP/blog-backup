@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RolesModule } from './roles/roles.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { JWT_CONFIG, DB_CONFIG } from './config/config';
+import { JWT_CONFIG, DB_CONFIG } from '../config/config';
 
 @Module({
   imports: [

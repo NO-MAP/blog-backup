@@ -15,11 +15,28 @@ export class UsersService {
     return this.usersRepository.find()
   }
 
-  addUser(user: CreateUserDto): Promise<User> {
+  addUser(createUserDto: CreateUserDto): Promise<User> {
+    const user: User = this.usersRepository.create(createUserDto);
     return this.usersRepository.save(user)
   }
 
-  findOne(username: string): Promise<User | undefined> {
-    return this.usersRepository.findOne({ username: username })
+  async findOneByUsername(username: string): Promise<User | null> {
+    const user = await this.usersRepository.findOne({ username: username })
+    if (user) return user;
+    return null
   }
+
+  async findOneByEmail(email: string): Promise<User | null> {
+    const user = await this.usersRepository.findOne({ email: email })
+    if (user) return user;
+    return null
+  }
+}
+
+
+
+interface FindInterface {
+  id?: string;
+  username?: string;
+  email?: string;
 }

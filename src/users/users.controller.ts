@@ -4,6 +4,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
+import * as bcrypt from 'bcrypt';
 
 @ApiTags('users')
 @Controller('users')
@@ -14,8 +15,10 @@ export class UsersController {
   ) { }
 
   @Get()
-  getConfig(): string {
-    return this.ConfigService.get('TEST');
+  async getConfig() {
+    const data = await bcrypt.hash('123456789', 10);
+    console.log(data)
+    return this.ConfigService.get('DB');
   }
 
   @Get('/list')

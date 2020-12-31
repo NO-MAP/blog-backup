@@ -1,8 +1,11 @@
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, PrimaryColumn, CreateDateColumn, UpdateDateColumn, Generated } from "typeorm";
+import * as bcrypt from 'bcrypt';
 
 @Entity()
+
 export class User {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
+  @Generated('uuid')
   id: number;
 
   @Column({ length: 20 })
@@ -11,6 +14,21 @@ export class User {
   @Column({ length: 50 })
   email: string;
 
-  @Column({ length: 50 })
-  password: string
+  @Column()
+  password: string;
+
+  @CreateDateColumn()
+  createdate;
+
+  @UpdateDateColumn()
+  updatedate;
+
+  @BeforeInsert()
+  async hashPassword() {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
+
+  async comparePassword(attempt: string): Promise<boolean> {
+    return await bcrypt.compare(attempt, this.password);
+  }
 }

@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { LoginDto } from './dto/login.dto';
+import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -11,19 +12,41 @@ export class AuthService {
     private readonly jwtService: JwtService
   ) { }
 
-  async validateUser(name: string, password: string): Promise<any> {
-    const user: User | undefined = await this.usersService.findOne(name);
-    if (user && user.password === password) {
+  async validateUser(username: string, password: string): Promise<any> {
+    const user: User | undefined = await this.usersService.findOneByUsername(username);
+    const validatePassword: boolean = await user.comparePassword(password);
+    if (user && validatePassword) {
       const { password, ...result } = user;
       return result
     }
     return null;
   }
 
-  async login(user: any) {
-    const payload = { id: user.id, username: user.username, email: user.emial };
+  async login(loginDto: LoginDto) {
+    const user = await this.validateUser(loginDto.username, loginDto.password)
+    if (!user) {
+      throw new BadRequestException("登录失败")
+    }
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: this.jwtService.sign(user),
     };
+  }
+
+  async register(registerDto: RegisterDto) {
+
+
+    const nameUser = await this.usersService.findOneByUsername(registerDto.username)
+    if (nameUser) throw new BadRequestException("此用户名已被使用")
+    const emailUser = await this.usersService.findOneByEmail(registerDto.email)
+    if (emailUser) throw new BadRequestException("此邮箱已被使用")
+
+
+    const newUser: User = await this.usersService.addUser({
+      username: registerDto.username,
+      email: registerDto.email,
+      password: registerDto.password
+    })
+    const { password, ...res } = newUser;
+    return res
   }
 }
