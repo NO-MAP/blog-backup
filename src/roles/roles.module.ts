@@ -1,6 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Role } from './role.entity';
+import { RolesController } from './roles.controller';
+import { RolesService } from './roles.service';
 
 @ApiTags('roles')
-@Module({})
-export class RolesModule {}
+@Module({
+  imports: [TypeOrmModule.forFeature([Role])],
+  controllers: [RolesController],
+  providers: [RolesService],
+  exports: [RolesService]
+})
+export class RolesModule { }

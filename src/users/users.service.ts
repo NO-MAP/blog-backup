@@ -1,5 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Role } from 'src/roles/role.entity';
+import { RolesService } from 'src/roles/roles.service';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
@@ -9,27 +11,43 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private readonly rolesService: RolesService
   ) { }
 
   findAll(): Promise<User[]> {
     return this.usersRepository.find()
   }
 
-  addUser(createUserDto: CreateUserDto): Promise<User> {
+  async addUser(createUserDto: CreateUserDto): Promise<User> {
+    const defaultRole: Role | undefined = await this.rolesService.searchOne({ roleCode: 'SYS:user' })
+    if (!defaultRole) throw new BadRequestException("系统未设置默认角色")
     const user: User = this.usersRepository.create(createUserDto);
+    user.roles = [defaultRole];
     return this.usersRepository.save(user)
   }
 
-  async findOneByUsername(username: string): Promise<User | null> {
-    const user = await this.usersRepository.findOne({ username: username })
-    if (user) return user;
-    return null
+  async findOne(find: FindInterface): Promise<User | undefined> {
+    const { id, userName, email } = find;
+    let user: User | undefined;
+    if (id) {
+      user = await this.usersRepository.findOne({ id })
+      return user;
+    }
+    if (userName) {
+      user = await this.usersRepository.findOne({ userName })
+      return user
+    }
+    if (email) {
+      user = await this.usersRepository.findOne({ email })
+      return user
+    }
   }
 
-  async findOneByEmail(email: string): Promise<User | null> {
-    const user = await this.usersRepository.findOne({ email: email })
-    if (user) return user;
-    return null
+  async findOneByIdWithRoles(id: string): Promise<User | undefined> {
+    const user: User | undefined = await this.usersRepository.findOne({ id }, {
+      relations: ['roles']
+    })
+    return user;
   }
 }
 
@@ -37,6 +55,6 @@ export class UsersService {
 
 interface FindInterface {
   id?: string;
-  username?: string;
+  userName?: string;
   email?: string;
 }

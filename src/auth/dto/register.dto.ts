@@ -5,7 +5,7 @@ import { Match } from "./match.decorator";
 export class RegisterDto {
   @ApiProperty()
   @IsString()
-  readonly username: string;
+  readonly userName: string;
 
   @ApiProperty()
   @IsEmail({}, {

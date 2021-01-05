@@ -12,8 +12,10 @@ export class AuthService {
     private readonly jwtService: JwtService
   ) { }
 
-  async validateUser(username: string, password: string): Promise<any> {
-    const user: User | undefined = await this.usersService.findOneByUsername(username);
+  async validateUser(userName: string, password: string): Promise<any> {
+    const user: User | undefined = await this.usersService.findOne({
+      userName: userName
+    });
     const validatePassword: boolean = await user.comparePassword(password);
     if (user && validatePassword) {
       const { password, ...result } = user;
@@ -23,7 +25,7 @@ export class AuthService {
   }
 
   async login(loginDto: LoginDto) {
-    const user = await this.validateUser(loginDto.username, loginDto.password)
+    const user = await this.validateUser(loginDto.userName, loginDto.password)
     if (!user) {
       throw new BadRequestException("登录失败")
     }
@@ -33,16 +35,18 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterDto) {
-
-
-    const nameUser = await this.usersService.findOneByUsername(registerDto.username)
+    const nameUser = await this.usersService.findOne({
+      userName: registerDto.userName
+    })
     if (nameUser) throw new BadRequestException("此用户名已被使用")
-    const emailUser = await this.usersService.findOneByEmail(registerDto.email)
+    const emailUser = await this.usersService.findOne({
+      email: registerDto.email
+    })
     if (emailUser) throw new BadRequestException("此邮箱已被使用")
 
 
     const newUser: User = await this.usersService.addUser({
-      username: registerDto.username,
+      userName: registerDto.userName,
       email: registerDto.email,
       password: registerDto.password
     })

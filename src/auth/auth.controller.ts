@@ -1,10 +1,12 @@
 import { Body, Request, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
+import { RolesGuard } from 'src/guards/roles.guard';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
-import { User } from './user.decorator';
+import { User } from '../decorators/user.decorator';
+import { Roles } from 'src/decorators/roles.decorator';
 
 
 @ApiTags('auth')
@@ -25,7 +27,8 @@ export class AuthController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('SYS:admin')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get('/profile')
   getProfile(@User() user) {
     return user;

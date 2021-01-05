@@ -21,6 +21,7 @@ import { JWT_CONFIG, DB_CONFIG } from '../config/config';
       database: DB_CONFIG().DB_NAME,
       autoLoadEntities: true,
       synchronize: true,
+      entityPrefix: 'blog_'
     }),
     UsersModule,
     RolesModule,
