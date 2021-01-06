@@ -1,7 +1,8 @@
-import { Column, CreateDateColumn, Entity, Generated, PrimaryColumn, UpdateDateColumn } from "typeorm";
+import { Column, Entity, Generated, PrimaryColumn } from "typeorm";
+import { Base } from "./base.entity";
 
 @Entity()
-export class Role {
+export class Role  extends Base{
   @PrimaryColumn({name: 'role_id'})
   @Generated('uuid')
   id: string;
@@ -14,10 +15,5 @@ export class Role {
 
   @Column({length: 150, name: 'role_description'})
   description: string;
-
-  @CreateDateColumn({name: 'create_date'})
-  createDate;
-
-  @UpdateDateColumn({name: 'update_date'})
-  updateDate;
+ 
 }

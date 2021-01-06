@@ -1,11 +1,34 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Role } from 'src/roles/role.entity';
+import { Role } from 'src/entities/role.entity';
 import { RolesService } from 'src/roles/roles.service';
 import { FindOneOptions, Like, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PageQueryUserDto } from './dto/page-query-user.dto';
-import { User } from './user.entity';
+import { User } from '../entities/user.entity';
+
+interface updateUserInterface {
+  id: string;
+  userName?: string;
+  email?: string;
+  roles?: string[];
+}
+
+interface FindInterface {
+  id?: string;
+  userName?: string;
+  email?: string;
+}
+
+interface CheckInterface {
+  userName?: string;
+  email?: string;
+}
+
+interface CheckResultInterface {
+  success: boolean;
+  message?: string[];
+}
 
 @Injectable()
 export class UsersService {
@@ -20,7 +43,7 @@ export class UsersService {
   }
 
   async addUser(createUserDto: CreateUserDto): Promise<User> {
-    const defaultRole: Role | undefined = await this.rolesService.searchOne({ roleCode: 'SYS:user' })
+    const defaultRole: Role | undefined = await this.rolesService.searchOne({ roleCode: 'sys:user' })
     if (!defaultRole) throw new BadRequestException("系统未设置默认角色")
     const user: User = this.usersRepository.create(createUserDto);
     user.roles = [defaultRole];
@@ -52,6 +75,7 @@ export class UsersService {
   }
 
   async findOneByIdWithRoles(id: string): Promise<User | undefined> {
+    console.log(id)
     const user: User | undefined = await this.usersRepository.findOne({ id }, {
       relations: ['roles']
     })
@@ -94,27 +118,10 @@ export class UsersService {
     //   .getManyAndCount()
     // return result
   }
+
+  async delUser(id: string): Promise<any> {
+    const result = await this.usersRepository.delete(id)
+    return result
+  }
 }
 
-interface updateUserInterface {
-  id: string;
-  userName?: string;
-  email?: string;
-  roles?: string[];
-}
-
-interface FindInterface {
-  id?: string;
-  userName?: string;
-  email?: string;
-}
-
-interface CheckInterface {
-  userName?: string;
-  email?: string;
-}
-
-interface CheckResultInterface {
-  success: boolean;
-  message?: string[];
-}

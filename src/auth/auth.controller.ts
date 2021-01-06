@@ -27,7 +27,7 @@ export class AuthController {
   }
 
   @ApiBearerAuth()
-  @Roles('SYS:admin')
+  @Roles('sys:user')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get('/profile')
   getProfile(@User() user) {

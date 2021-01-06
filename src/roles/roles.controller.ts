@@ -1,7 +1,7 @@
 import { BadRequestException, Body, Controller, Get, HttpException, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateRoleDto } from './dto/create-role.dto';
-import { Role } from './role.entity';
+import { Role } from '../entities/role.entity';
 import { RolesService } from './roles.service';
 
 @ApiTags('roles')

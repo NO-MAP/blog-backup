@@ -1,10 +1,11 @@
-import { BeforeInsert, Column, Entity, PrimaryColumn, CreateDateColumn, UpdateDateColumn, Generated, ManyToMany, JoinTable } from "typeorm";
+import { BeforeInsert, Column, Entity, PrimaryColumn, Generated, ManyToMany, JoinTable } from "typeorm";
 import * as bcrypt from 'bcrypt';
-import { Role } from "src/roles/role.entity";
+import { Role } from "src/entities/role.entity";
+import { Base } from "./base.entity";
 
 @Entity()
-export class User {
-  @PrimaryColumn({name: 'user_id'})
+export class User extends Base {
+  @PrimaryColumn({ name: 'user_id' })
   @Generated('uuid')
   id: string;
 
@@ -18,14 +19,9 @@ export class User {
   password: string;
 
   @ManyToMany(() => Role)
-  @JoinTable({name: 'user_role'})
+  @JoinTable({ name: 'user_role' })
   roles: Role[];
 
-  @CreateDateColumn()
-  createDate;
-
-  @UpdateDateColumn()
-  updateDate;
 
   @BeforeInsert()
   async hashPassword() {
