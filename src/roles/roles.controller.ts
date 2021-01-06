@@ -19,14 +19,16 @@ export class RolesController {
 
   @Post()
   async addRole(@Body() createRoleDto: CreateRoleDto): Promise<Role> {
-    let role: Role | undefined = await this.rolesService.searchOne({
+    const checkResult = await this.rolesService.checkRole({
       roleName: createRoleDto.roleName,
       roleCode: createRoleDto.roleCode
     })
-    if (role) {
-      throw new BadRequestException('角色名或者角色代码已被使用')
+    if (!checkResult.success) {
+      throw new BadRequestException({
+        message: checkResult.message
+      })
     }
-    role = await this.rolesService.addRole(createRoleDto);
+    const role: Role = await this.rolesService.addRole(createRoleDto);
     return role
   }
 }

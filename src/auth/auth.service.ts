@@ -35,15 +35,13 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterDto) {
-    const nameUser = await this.usersService.findOne({
-      userName: registerDto.userName
-    })
-    if (nameUser) throw new BadRequestException("此用户名已被使用")
-    const emailUser = await this.usersService.findOne({
+    const checkResult = await this.usersService.checkUser({
+      userName: registerDto.userName,
       email: registerDto.email
     })
-    if (emailUser) throw new BadRequestException("此邮箱已被使用")
-
+    if (!checkResult.success) throw new BadRequestException({
+      message: checkResult.message
+    })
 
     const newUser: User = await this.usersService.addUser({
       userName: registerDto.userName,

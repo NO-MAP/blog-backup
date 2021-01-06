@@ -1,12 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { Role } from './role.entity';
 
 interface searchInterface {
   roleName?: string;
   roleCode?: string;
+}
+
+
+interface CheckInterface {
+  roleName?: string;
+  roleCode?: string;
+}
+
+interface CheckResultInterface {
+  success: boolean;
+  message?: string[];
 }
 
 @Injectable()
@@ -26,15 +37,32 @@ export class RolesService {
   }
 
   async searchOne(search: searchInterface): Promise<Role | undefined> {
-    let role: Role | undefined;
-    const { roleName, roleCode } = search;
-    if (roleName) {
-      role = await this.rolesRepository.findOne({ roleName: roleName })
-      return role
+    const role: Role | undefined = await this.rolesRepository.findOne(search as FindOneOptions<Role>)
+    return role;
+  }
+
+  async findRolesByIds(ids: string[]): Promise<Role[]> {
+    const roles: Role[] = await this.rolesRepository.findByIds(ids)
+    return roles
+  }
+
+  async checkRole(check: CheckInterface): Promise<CheckResultInterface> {
+    const result: CheckResultInterface = {
+      success: true,
+      message: []
     }
-    if (roleCode) {
-      role = await this.rolesRepository.findOne({ roleCode: roleCode })
-      return role
+    const keys = Object.keys(check);
+    for (let index = 0; index < keys.length; index++) {
+      const key = keys[index];
+      const findOneOptions = {};
+      findOneOptions[key] = check[key];
+      const role: Role | undefined = await this.rolesRepository.findOne(findOneOptions as FindOneOptions<Role>)
+      if (role) {
+        result.success = false;
+        result.message.push(`${key}已存在`)
+      }
     }
+
+    return result
   }
 }
