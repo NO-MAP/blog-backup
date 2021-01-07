@@ -7,7 +7,9 @@ import { RolesService } from './roles.service';
 
 @ApiTags('roles')
 @Module({
-  imports: [TypeOrmModule.forFeature([Role])],
+  imports: [
+    TypeOrmModule.forFeature([Role]),
+  ],
   controllers: [RolesController],
   providers: [RolesService],
   exports: [RolesService]

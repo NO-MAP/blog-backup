@@ -75,7 +75,6 @@ export class UsersService {
   }
 
   async findOneByIdWithRoles(id: string): Promise<User | undefined> {
-    console.log(id)
     const user: User | undefined = await this.usersRepository.findOne({ id }, {
       relations: ['roles']
     })
@@ -119,9 +118,8 @@ export class UsersService {
     // return result
   }
 
-  async delUser(id: string): Promise<any> {
-    const result = await this.usersRepository.delete(id)
-    return result
+  delUser(id: string) {
+    return this.usersRepository.delete(id)
   }
 }
 

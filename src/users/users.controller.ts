@@ -28,7 +28,7 @@ export class UsersController {
   }
 
   @ApiBearerAuth()
-  @Roles('sys:user')
+  @Roles('sys:admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get('/list')
   getUsers(): Promise<User[]> {
@@ -36,7 +36,7 @@ export class UsersController {
   }
 
   @ApiBearerAuth()
-  @Roles('sys:user')
+  @Roles('sys:admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get('/page')
   async getUsersPage(@Query() pageQueryUserDto: PageQueryUserDto): Promise<any> {

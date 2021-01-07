@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
 import { CreateRoleDto } from './dto/create-role.dto';
@@ -20,6 +20,13 @@ interface CheckResultInterface {
   message?: string[];
 }
 
+interface updateRoleInterface {
+  id: string;
+  roleName?: string;
+  roleCode?: string;
+  description?: string;
+}
+
 @Injectable()
 export class RolesService {
   constructor(
@@ -29,6 +36,10 @@ export class RolesService {
 
   findOneById(id: string): Promise<Role | undefined> {
     return this.rolesRepository.findOne(id)
+  }
+
+  async findAllRoles(): Promise<Role[]> {
+    return this.rolesRepository.find()
   }
 
   addRole(createRoleDto: CreateRoleDto): Promise<Role> {
@@ -64,5 +75,22 @@ export class RolesService {
     }
 
     return result
+  }
+
+  async updateRole(updateData: updateRoleInterface) {
+    let role: Role | undefined = await this.rolesRepository.findOne(updateData.id)
+    if (!role) throw new BadRequestException(`角色${updateData.id}不存在`)
+    role = {
+      ...role,
+      ...updateData
+    }
+    await this.rolesRepository.save(role)
+    return role
+  }
+
+  async delRole(id: string): Promise<boolean> {
+    const result = await this.rolesRepository.delete(id);
+    if (!result.affected) throw new BadRequestException('删除失败');
+    return true;
   }
 }
