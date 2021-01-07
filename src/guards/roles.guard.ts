@@ -19,7 +19,6 @@ export class RolesGuard implements CanActivate {
     const { id } = request.user;
     const user = await this.userService.findOneByIdWithRoles(id);
     const userRoles = user.roles.map(item => item.roleCode)
-    console.log(roles, userRoles, intersection(roles, userRoles).length === roles.length)
     return intersection(roles, userRoles).length === roles.length
   }
 }

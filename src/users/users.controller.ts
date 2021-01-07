@@ -19,18 +19,9 @@ export class UsersController {
   ) { }
 
   @ApiBearerAuth()
-  @ApiParam({ name: 'id', type: 'string' })
   @Roles('sys:admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Get('/:id')
-  getUser(@Param('id') id: string) {
-    return this.usersService.findOneByIdWithRoles(id)
-  }
-
-  @ApiBearerAuth()
-  @Roles('sys:admin')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Get('/list')
+  @Get('list')
   getUsers(): Promise<User[]> {
     return this.usersService.findAll()
   }
@@ -38,13 +29,22 @@ export class UsersController {
   @ApiBearerAuth()
   @Roles('sys:admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Get('/page')
+  @Get('page')
   async getUsersPage(@Query() pageQueryUserDto: PageQueryUserDto): Promise<any> {
     const data = await this.usersService.pageQueryUser(pageQueryUserDto);
     return {
       records: data[0],
       total: data[1]
     }
+  }
+
+  @ApiBearerAuth()
+  @ApiParam({ name: 'id', type: 'string' })
+  @Roles('sys:admin')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Get(':id')
+  getUser(@Param('id') id: string) {
+    return this.usersService.findOneByIdWithRoles(id)
   }
 
   @ApiBearerAuth()
@@ -67,7 +67,7 @@ export class UsersController {
   @ApiParam({ name: 'id', type: 'string' })
   @Roles('sys:admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Delete('/:id')
+  @Delete(':id')
   delUser(@Param('id') id: string) {
     return this.usersService.delUser(id)
   }

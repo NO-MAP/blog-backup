@@ -16,21 +16,21 @@ export class RolesController {
   ) { }
 
   @ApiBearerAuth()
-  @ApiParam({ name: 'id', type: 'string' })
-  @Roles('sys:admin')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Get('/:id')
-  async getRole(@Param('id') id: string): Promise<Role | undefined> {
-    const role: Role | undefined = await this.rolesService.findOneById(id)
-    return role
-  }
-
-  @ApiBearerAuth()
   @Roles('sys:admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get('/list')
   getAllRoles() {
     return this.rolesService.findAllRoles()
+  }
+
+  @ApiBearerAuth()
+  @ApiParam({ name: 'id', type: 'string' })
+  @Roles('sys:admin')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Get(':id')
+  async getRole(@Param('id') id: string): Promise<Role | undefined> {
+    const role: Role | undefined = await this.rolesService.findOneById(id)
+    return role
   }
 
   @ApiBearerAuth()
@@ -63,7 +63,7 @@ export class RolesController {
   @ApiParam({ name: 'id', type: 'string' })
   @Roles('sys:admin')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Delete('/:id')
+  @Delete(':id')
   async delRole(@Param('id') id: string) {
     const result = await this.rolesService.delRole(id);
     return result

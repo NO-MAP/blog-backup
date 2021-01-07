@@ -19,13 +19,13 @@ export class AuthController {
     private readonly usersService: UsersService
   ) { }
 
-  @Post('/register')
+  @Post('register')
   async register(@Body() registerDto: RegisterDto) {
     return this.authService.register(registerDto)
   }
 
 
-  @Post('/login')
+  @Post('login')
   async login(@Body() loginDto: LoginDto) {
     const res = await this.authService.login(loginDto);
     return res
@@ -34,7 +34,7 @@ export class AuthController {
   @ApiBearerAuth()
   @Roles('sys:user')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Get('/profile')
+  @Get('profile')
   async getProfile(@User() user: tokenInterface): Promise<any> {
     const userData = await this.usersService.findOneByIdWithRoles(user.id)
     const { password, ...res } = userData

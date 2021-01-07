@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { Role } from '../entities/role.entity';
+import { update } from 'lodash';
 
 interface searchInterface {
   roleName?: string;
@@ -39,7 +40,12 @@ export class RolesService {
   }
 
   async findAllRoles(): Promise<Role[]> {
-    return this.rolesRepository.find()
+    const roles: Role[] = await this.rolesRepository.find({
+      order: {
+        createDate: "ASC"
+      }
+    });
+    return roles
   }
 
   addRole(createRoleDto: CreateRoleDto): Promise<Role> {
