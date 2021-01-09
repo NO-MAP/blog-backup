@@ -21,7 +21,7 @@ export class RolesController {
   @Get('/list')
   getAllRoles() {
     return this.rolesService.findAllRoles()
-  }
+  };
 
   @ApiBearerAuth()
   @ApiParam({ name: 'id', type: 'string' })
@@ -31,7 +31,7 @@ export class RolesController {
   async getRole(@Param('id') id: string): Promise<Role | undefined> {
     const role: Role | undefined = await this.rolesService.findOneById(id)
     return role
-  }
+  };
 
   @ApiBearerAuth()
   @Roles('sys:admin')
@@ -49,7 +49,7 @@ export class RolesController {
     }
     const role: Role = await this.rolesService.addRole(createRoleDto);
     return role
-  }
+  };
 
   @ApiBearerAuth()
   @Roles('sys:admin')
@@ -57,7 +57,7 @@ export class RolesController {
   @Put()
   updateRole(@Body() updateRoleDto: UpdateRoleDto) {
     return this.rolesService.updateRole(updateRoleDto)
-  }
+  };
 
   @ApiBearerAuth()
   @ApiParam({ name: 'id', type: 'string' })
@@ -67,5 +67,5 @@ export class RolesController {
   async delRole(@Param('id') id: string) {
     const result = await this.rolesService.delRole(id);
     return result
-  }
+  };
 }

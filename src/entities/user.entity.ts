@@ -5,7 +5,7 @@ import { Base } from "./base.entity";
 
 @Entity()
 export class User extends Base {
-  @PrimaryColumn({ name: 'user_id' })
+  @PrimaryColumn()
   @Generated('uuid')
   id: string;
 

@@ -16,7 +16,7 @@ export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly ConfigService: ConfigService
-  ) { }
+  ) { };
 
   @ApiBearerAuth()
   @Roles('sys:admin')
@@ -24,7 +24,7 @@ export class UsersController {
   @Get('list')
   getUsers(): Promise<User[]> {
     return this.usersService.findAll()
-  }
+  };
 
   @ApiBearerAuth()
   @Roles('sys:admin')
@@ -36,7 +36,7 @@ export class UsersController {
       records: data[0],
       total: data[1]
     }
-  }
+  };
 
   @ApiBearerAuth()
   @ApiParam({ name: 'id', type: 'string' })
@@ -45,7 +45,7 @@ export class UsersController {
   @Get(':id')
   getUser(@Param('id') id: string) {
     return this.usersService.findOneByIdWithRoles(id)
-  }
+  };
 
   @ApiBearerAuth()
   @Roles('sys:admin')
@@ -53,7 +53,7 @@ export class UsersController {
   @Post()
   addUser(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.usersService.addUser(createUserDto)
-  }
+  };
 
   @ApiBearerAuth()
   @Roles('sys:admin')
@@ -61,7 +61,7 @@ export class UsersController {
   @Put()
   updateUser(@Body() updateUserDto: UpdateUserDto): Promise<User> {
     return this.usersService.updateUser(updateUserDto)
-  }
+  };
 
   @ApiBearerAuth()
   @ApiParam({ name: 'id', type: 'string' })
@@ -70,5 +70,5 @@ export class UsersController {
   @Delete(':id')
   delUser(@Param('id') id: string) {
     return this.usersService.delUser(id)
-  }
+  };
 }

@@ -17,19 +17,19 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly usersService: UsersService
-  ) { }
+  ) { };
 
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
     return this.authService.register(registerDto)
-  }
+  };
 
 
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
     const res = await this.authService.login(loginDto);
     return res
-  }
+  };
 
   @ApiBearerAuth()
   @Roles('sys:user')
@@ -39,5 +39,5 @@ export class AuthController {
     const userData = await this.usersService.findOneByIdWithRoles(user.id)
     const { password, ...res } = userData
     return res
-  }
+  };
 }

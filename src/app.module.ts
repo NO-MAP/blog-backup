@@ -5,6 +5,7 @@ import { RolesModule } from './roles/roles.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { JWT_CONFIG, DB_CONFIG } from '../config/config';
+import { MenuModule } from './menus/menus.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { JWT_CONFIG, DB_CONFIG } from '../config/config';
     UsersModule,
     RolesModule,
     AuthModule,
+    MenuModule,
   ],
 })
 export class AppModule { }
